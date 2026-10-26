@@ -1,3 +1,4 @@
+import 'services/server_service.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -39,10 +40,8 @@ class _VpnHomeState extends State<VpnHome> {
   String selectedCode = 'SG Server 01';
 
   final servers = <String, String>{
-    'Singapore': 'SG Server 01',
-    'United States': 'US Server 01',
-    'United Kingdom': 'UK Server 01',
-    'Japan': 'JP Server 01',
+    for (final server in ServerService.servers)
+      server.country: server.name,
   };
 
   void selectServer() {
@@ -61,12 +60,16 @@ class _VpnHomeState extends State<VpnHome> {
             ),
             for (final entry in servers.entries)
               ListTile(
-                leading: const Icon(
-                  Icons.public,
-                  color: Color(0xFF38BDF8),
+                leading: Text(
+                  ServerService.servers
+                      .firstWhere((server) => server.country == entry.key)
+                      .flag,
+                  style: const TextStyle(fontSize: 28),
                 ),
                 title: Text(entry.key),
-                subtitle: Text(entry.value),
+                subtitle: Text(
+                  '${entry.value} • ${ServerService.servers.firstWhere((server) => server.country == entry.key).protocol}',
+                ),
                 trailing: selectedServer == entry.key
                     ? const Icon(Icons.check_circle,
                         color: Color(0xFF38BDF8))
